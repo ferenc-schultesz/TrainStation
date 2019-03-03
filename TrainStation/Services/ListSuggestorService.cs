@@ -31,7 +31,7 @@ namespace TrainStation.Services
             {
                 suggestions.Stations = this.stations.Where(s => s.ToLower().StartsWith(userInput.ToLower())).ToList();
             }
-
+            
             // Get possible next chars
             List<char> chars = new List<char>();
             foreach (string station in suggestions.Stations)
