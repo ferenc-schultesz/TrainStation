@@ -11,18 +11,19 @@ namespace TrainStation
         {
             ITrainStationSuggestorService suggestorWithList;
             ITrainStationSuggestorService suggestorWithTrie;
+            IFileHandler ffileHAndler = new FileHandler();
             try
             {
-                // Init suggesters
+                // Init suggestors
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
-                suggestorWithList = new ListSuggestorService("Data\\TrainStations.txt", new FileHandler());
+                suggestorWithList = new TrieSuggestorService("Data\\TrainStations.txt", ffileHAndler);
                 stopwatch.Stop();
                 Console.WriteLine("Trainstation suggester has been initialised.");
                 Console.Write($"It took {stopwatch.ElapsedTicks} ticks with list data structure ");
                 stopwatch.Reset();
                 stopwatch.Start();
-                suggestorWithTrie = new TrieSuggestorService("Data\\TrainStations.txt", new FileHandler());
+                suggestorWithTrie = new TrieSuggestorService("Data\\TrainStations.txt", ffileHAndler);
                 stopwatch.Stop();
                 Console.WriteLine($"and {stopwatch.ElapsedTicks} ticks with trie data structure.");
                 stopwatch.Reset();
@@ -34,42 +35,58 @@ namespace TrainStation
 
                 // search with list 
                 stopwatch.Start();
-                var suggestions = suggestorWithList.GetSuggestions(searchString);
+                var listSuggestions = suggestorWithList.GetSuggestions(searchString);
                 stopwatch.Stop();
                 Console.WriteLine($"------------- Search took {stopwatch.ElapsedTicks} ticks with list -------------");
                 Console.Write("Possible next letters: ");
-                foreach(char letter in suggestions.NextLetters)
+                foreach(char letter in listSuggestions.NextLetters)
                 {
                     Console.Write(letter + " ");
                 }
                 Console.WriteLine("");
                 Console.WriteLine("------------------------------------");
                 Console.Write("Possible Stations: ");
-                foreach (string station in suggestions.Stations)
+                foreach (string station in listSuggestions.Stations)
                 {
                     Console.Write(station + " ");
                 }
                 Console.WriteLine("");
                 stopwatch.Reset();
 
+                // search with trie
                 stopwatch.Start();
-                suggestions = suggestorWithTrie.GetSuggestions(searchString);
+                var trieSuggestions = suggestorWithTrie.GetSuggestions(searchString);
                 stopwatch.Stop();
                 Console.WriteLine($"Search took {stopwatch.ElapsedTicks} ticks with trie ------------------------------------");
                 Console.Write("Possible next letters: ");
-                foreach (char letter in suggestions.NextLetters)
+                foreach (char letter in trieSuggestions.NextLetters)
                 {
                     Console.Write(letter + " ");
                 }
                 Console.WriteLine("");
                 Console.WriteLine("------------------------------------");
                 Console.Write("Possible Stations: ");
-                foreach (string station in suggestions.Stations)
+                foreach (string station in trieSuggestions.Stations)
                 {
                     Console.Write(station + " ");
                 }
                 stopwatch.Reset();
 
+                stopwatch.Start();
+                for (int i = 0; i < 100000; i++)
+                {
+
+                }
+                Console.WriteLine($"Loop test 1: {stopwatch.ElapsedTicks}");
+                stopwatch.Reset();
+
+                stopwatch.Start();
+                for (int i = 0; i < 100000; i++)
+                {
+
+                }
+                Console.WriteLine($"Loop test 2: {stopwatch.ElapsedTicks}");
+                stopwatch.Reset();
             }
             catch (Exception ex)
             {

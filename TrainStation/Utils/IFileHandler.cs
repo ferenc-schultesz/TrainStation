@@ -8,6 +8,6 @@ namespace TrainStation.Utils
     {
         List<string> ReadTextFileLines(string path);
         List<string> ReadTextFileCommaSeparated(string path);
-
+        void ReadTextFileLinesRef(string path, ref List<string> list);
     }
 }

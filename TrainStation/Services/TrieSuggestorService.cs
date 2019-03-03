@@ -22,7 +22,8 @@ namespace TrainStation.Services
             };
 
             this.fileHandler = _fileHandler;
-            List<string> stations = fileHandler.ReadTextFileLines(dataFilePath);
+            List<string> stations = new List<string>();
+            fileHandler.ReadTextFileLinesRef(dataFilePath, ref stations);
             for (int i = 0; i < stations.Count; i++)
             {
                 this.Insert(stations[i]);

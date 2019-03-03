@@ -29,6 +29,23 @@ namespace TrainStation.Utils
             return lines;
         }
 
+        public void ReadTextFileLinesRef(string path, ref List<string> list)
+        {
+            if(!File.Exists(path))
+            {
+                throw new Exception($"File not found at {path}");
+            }
+
+            var lines = new List<string>();
+            using (StreamReader stream = new StreamReader(path))
+            {
+                while (!stream.EndOfStream)
+                {
+                    list.Add(stream.ReadLine().ToUpper());
+                }
+            }
+        }
+
         public List<string> ReadTextFileCommaSeparated(string path)
         {
             if (!File.Exists(path))

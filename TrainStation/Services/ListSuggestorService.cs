@@ -23,7 +23,8 @@ namespace TrainStation.Services
         public ListSuggestorService(string dataFilePath, IFileHandler _fileHandler)
         {
             this.fileHandler = _fileHandler;
-            this.stations = fileHandler.ReadTextFileLines(dataFilePath);
+            this.stations = new List<string>();
+            fileHandler.ReadTextFileLinesRef(dataFilePath, ref this.stations);
         }
 
         /// <summary>
