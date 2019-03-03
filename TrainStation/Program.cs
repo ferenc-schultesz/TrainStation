@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using TrainStation.Services;
+using TrainStation.Utils;
 
 namespace TrainStation
 {
@@ -7,30 +9,66 @@ namespace TrainStation
     {
         static void Main(string[] args)
         {
-            ITrainStationSuggestorService suggestor;
+            ITrainStationSuggestorService suggestorWithList;
+            ITrainStationSuggestorService suggestorWithTrie;
             try
             {
-                suggestor = new ListSuggestorService("Data\\TrainStations.txt");
-                Console.WriteLine("Program initialised.");
+                // Init suggesters
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+                suggestorWithList = new ListSuggestorService("Data\\TrainStations.txt", new FileHandler());
+                stopwatch.Stop();
+                Console.WriteLine("Trainstation suggester has been initialised.");
+                Console.Write($"It took {stopwatch.ElapsedTicks} ticks with list data structure ");
+                stopwatch.Reset();
+                stopwatch.Start();
+                suggestorWithTrie = new TrieSuggestorService("Data\\TrainStations.txt", new FileHandler());
+                stopwatch.Stop();
+                Console.WriteLine($"and {stopwatch.ElapsedTicks} ticks with trie data structure.");
+                stopwatch.Reset();
+
+                // Get user input and search
                 string searchString;
-                Console.Write("Enter full or partial station name: ");
+                Console.WriteLine("Enter full or partial station name: ");
                 searchString = Console.ReadLine();
 
-                var suggestions = suggestor.GetSuggestions(searchString);
-
-                Console.WriteLine("------------------------------------");
+                // search with list 
+                stopwatch.Start();
+                var suggestions = suggestorWithList.GetSuggestions(searchString);
+                stopwatch.Stop();
+                Console.WriteLine($"------------- Search took {stopwatch.ElapsedTicks} ticks with list -------------");
                 Console.Write("Possible next letters: ");
                 foreach(char letter in suggestions.NextLetters)
                 {
-                    Console.Write(letter + ", ");
+                    Console.Write(letter + " ");
                 }
-
+                Console.WriteLine("");
                 Console.WriteLine("------------------------------------");
                 Console.Write("Possible Stations: ");
                 foreach (string station in suggestions.Stations)
                 {
-                    Console.Write(station + ", ");
+                    Console.Write(station + " ");
                 }
+                Console.WriteLine("");
+                stopwatch.Reset();
+
+                stopwatch.Start();
+                suggestions = suggestorWithTrie.GetSuggestions(searchString);
+                stopwatch.Stop();
+                Console.WriteLine($"Search took {stopwatch.ElapsedTicks} ticks with trie ------------------------------------");
+                Console.Write("Possible next letters: ");
+                foreach (char letter in suggestions.NextLetters)
+                {
+                    Console.Write(letter + " ");
+                }
+                Console.WriteLine("");
+                Console.WriteLine("------------------------------------");
+                Console.Write("Possible Stations: ");
+                foreach (string station in suggestions.Stations)
+                {
+                    Console.Write(station + " ");
+                }
+                stopwatch.Reset();
 
             }
             catch (Exception ex)

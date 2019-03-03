@@ -10,7 +10,8 @@ namespace TrainStation.Services
     public class TrieSuggestorService : ITrainStationSuggestorService
     {
         private readonly Node root;
-        public TrieSuggestorService(string dataFilePath)
+        private readonly IFileHandler fileHandler;
+        public TrieSuggestorService(string dataFilePath, IFileHandler _fileHandler)
         {
             root = new Node()
             {
@@ -20,7 +21,8 @@ namespace TrainStation.Services
                 value = '^'
             };
 
-            List<string> stations = FileHandler.ReadTextFileLines(dataFilePath);
+            this.fileHandler = _fileHandler;
+            List<string> stations = fileHandler.ReadTextFileLines(dataFilePath);
             for (int i = 0; i < stations.Count; i++)
             {
                 this.Insert(stations[i]);
@@ -29,15 +31,17 @@ namespace TrainStation.Services
         }
         public Suggestions GetSuggestions(string userInput)
         {
+            userInput = userInput.ToUpper();
             Suggestions suggestions = new Suggestions();
 
             // get stations
-            Node nodeWithUSerInputPrefix = SearchNodeByPrefix(userInput);
+            Node nodeWithUSerInputPrefix = SearchNodeByPrefix(userInput.ToUpper());
             if (nodeWithUSerInputPrefix == null)
             {
                 return suggestions;
             }
             suggestions.Stations = GetStationsByNode(nodeWithUSerInputPrefix);
+            suggestions.Stations.Sort();
 
             // get next letters
             foreach (Node node in nodeWithUSerInputPrefix.children)
@@ -49,6 +53,7 @@ namespace TrainStation.Services
             }
 
             suggestions.NextLetters = suggestions.NextLetters.Distinct().ToList();
+            suggestions.NextLetters.Sort();
 
             return suggestions;
         }

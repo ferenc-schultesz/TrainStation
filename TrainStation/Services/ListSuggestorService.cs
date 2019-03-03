@@ -10,13 +10,16 @@ namespace TrainStation.Services
     public class ListSuggestorService : ITrainStationSuggestorService
     {
         private List<string> stations;
-        public ListSuggestorService(string dataFilePath)
+        private IFileHandler fileHandler;
+        public ListSuggestorService(string dataFilePath, IFileHandler _fileHandler)
         {
-            this.stations = FileHandler.ReadTextFileLines(dataFilePath);
+            this.fileHandler = _fileHandler;
+            this.stations = fileHandler.ReadTextFileLines(dataFilePath);
         }
 
         public Suggestions GetSuggestions(string userInput)
         {
+            userInput = userInput.ToUpper();
             var suggestions = new Suggestions();
 
             // Get all stations

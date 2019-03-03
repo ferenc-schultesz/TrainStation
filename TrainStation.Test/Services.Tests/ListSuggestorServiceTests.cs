@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using TrainStation.Services;
 using TrainStation.Test.TestUtils;
+using TrainStation.Utils;
+using Moq;
+using System.Linq;
 
 namespace TrainStation.Test.Services.Tests
 {
@@ -13,21 +16,32 @@ namespace TrainStation.Test.Services.Tests
 
         private readonly string testFileName;
 
+        private Mock<IFileHandler> fileHandler;
+
         public ListSuggestorServiceTests()
         {
             this.testFileName = "ListSuggestorService_UnitTestFile.txt";
         }
 
+        [OneTimeSetUp]
+        public void Init()
+        {
+            fileHandler = new Mock<IFileHandler>();
+        }
+
         [Test]
-        public void ListSuggestorService_WhenDataFileExists_ShouldReturnSuggestions()
+        [TestCase("a")]
+        [TestCase("Aq")]
+        [TestCase("")]
+        public void ListSuggestorService_WhenDataFileExists_ShouldReturnSuggestions(string input)
         {
             // Arrange
-            var content = new List<string> { "aq",};
-            TestDataHelper.CreateTestFile(this.testFileName, content);
-            this.service = new ListSuggestorService(testFileName);
+            var content = new List<string> { "AQ",};
+            fileHandler.Setup(fh => fh.ReadTextFileLines(It.IsAny<string>())).Returns(content);
+            this.service = new ListSuggestorService(testFileName, fileHandler.Object);
 
             // Act
-            var result = this.service.GetSuggestions("a");
+            var result = this.service.GetSuggestions(input);
 
             // Assert
             Assert.IsNotNull(result);
@@ -37,11 +51,11 @@ namespace TrainStation.Test.Services.Tests
         public void ListSuggestorService_WhenEmptyStringPassed_ShouldReturnAllStations()
         {
             // Arrange
-            var content = new List<string> { "a", "aa", "ab", "ac", "ad" };
-            TestDataHelper.CreateTestFile(this.testFileName, content);
-            this.service = new ListSuggestorService(testFileName);
+            var content = new List<string> { "A", "AA", "AB", "AC", "AD" };
+            fileHandler.Setup(fh => fh.ReadTextFileLines(It.IsAny<string>())).Returns(content);
+            this.service = new ListSuggestorService(testFileName, fileHandler.Object);
 
-            List<string> expectedStations = new List<string> { "a", "aa", "ab", "ac", "ad" };
+            List<string> expectedStations = new List<string> { "A", "AA", "AB", "AC", "AD" };
 
 
             // Act
@@ -56,17 +70,20 @@ namespace TrainStation.Test.Services.Tests
         }
 
         [Test]
-        public void ListSuggestorService_WhenStationsWithUserInputPrefixExist_ShouldReturnTheCorrectStations()
+        [TestCase("a", new string[] { "A", "AA", "AB", "AC", "AAA", "AAC", "ABB" })]
+        [TestCase("A", new string[] { "A", "AA", "AB", "AC", "AAA", "AAC", "ABB" })]
+        [TestCase("Aa", new string[] { "AA", "AAA", "AAC" })]
+        public void ListSuggestorService_WhenStationsWithUserInputPrefixExist_ShouldReturnTheCorrectStations(string input, string[] expected)
         {
             // Arrange
-            var content = new List<string> { "a", "aa", "ab", "ac", "aaa", "aac", "abb", "b", "ba" };
-            TestDataHelper.CreateTestFile(this.testFileName, content);
-            this.service = new ListSuggestorService(testFileName);
+            var content = new List<string> { "A", "AA", "AB", "AC", "AAA", "AAC", "ABB", "B", "BA" };
+            fileHandler.Setup(fh => fh.ReadTextFileLines(It.IsAny<string>())).Returns(content);
+            this.service = new ListSuggestorService(testFileName, fileHandler.Object);
 
-            List<string> expectedStations = new List<string> { "a", "aa", "ab", "ac", "aaa", "aac", "abb" };
+            List<string> expectedStations = expected.ToList();
 
             // Act
-            var result = this.service.GetSuggestions("a");
+            var result = this.service.GetSuggestions(input);
 
             // Assert
             Assert.AreEqual(expectedStations.Count, result.Stations.Count);
@@ -80,9 +97,9 @@ namespace TrainStation.Test.Services.Tests
         public void ListSuggestorService_WhenStationsWithUserInputPrefixDoesNotExist_ShouldReturnEmptyListForStations()
         {
             // Arrange
-            var content = new List<string> { "a", "aa", "ab", "ac", "aaa", "aac", "abb", "b", "ba" };
-            TestDataHelper.CreateTestFile(this.testFileName, content);
-            this.service = new ListSuggestorService(testFileName);
+            var content = new List<string> { "A", "AA", "AB", "AC", "AAA", "AAC", "ABB", "B", "BA" };
+            fileHandler.Setup(fh => fh.ReadTextFileLines(It.IsAny<string>())).Returns(content);
+            this.service = new ListSuggestorService(testFileName, fileHandler.Object);
 
             List<string> expectedStations = new List<string> { };
 
@@ -95,17 +112,20 @@ namespace TrainStation.Test.Services.Tests
         }
 
         [Test]
-        public void ListSuggestorService_WhenFurtherStationsWithUserInputPrefixExist_ShouldReturnTheCorrectNextLetters()
+        [TestCase("a", new char[] { 'A', 'B', 'C' })]
+        [TestCase("A", new char[] { 'A', 'B', 'C' })]
+        [TestCase("Aa", new char[] { 'A', 'C' })]
+        public void ListSuggestorService_WhenFurtherStationsWithUserInputPrefixExist_ShouldReturnTheCorrectNextLetters(string input, char[] expected)
         {
             // Arrange
-            var content = new List<string> { "a", "aa", "ab", "ac", "aaa", "aac", "abb", "b", "ba" };
-            TestDataHelper.CreateTestFile(this.testFileName, content);
-            this.service = new ListSuggestorService(testFileName);
+            var content = new List<string> { "A", "AA", "AB", "AC", "AAA", "AAC", "ABB", "B", "BA" };
+            fileHandler.Setup(fh => fh.ReadTextFileLines(It.IsAny<string>())).Returns(content);
+            this.service = new ListSuggestorService(testFileName, fileHandler.Object);
 
-            List<char> expectedNextLetters = new List<char> { 'a', 'b', 'c' };
+            List<char> expectedNextLetters = expected.ToList();
 
             // Act
-            var result = this.service.GetSuggestions("a");
+            var result = this.service.GetSuggestions(input);
 
             // Assert
             Assert.AreEqual(expectedNextLetters.Count, result.NextLetters.Count);
@@ -119,9 +139,9 @@ namespace TrainStation.Test.Services.Tests
         public void ListSuggestorService_WhenFurtherStationsWithUserInputPrefixDoesNotExist_ShouldNotReturnNextLetters()
         {
             // Arrange
-            var content = new List<string> { "a", "aa", "ab", "ac", "aaa", "aac", "abb", "b", "ba" };
-            TestDataHelper.CreateTestFile(this.testFileName, content);
-            this.service = new ListSuggestorService(testFileName);
+            var content = new List<string> { "A", "AA", "AB", "AC", "AAA", "AAC", "ABB", "B", "BA" };
+            fileHandler.Setup(fh => fh.ReadTextFileLines(It.IsAny<string>())).Returns(content);
+            this.service = new ListSuggestorService(testFileName, fileHandler.Object);
 
             List<char> expectedNextLetters = new List<char> {};
 
