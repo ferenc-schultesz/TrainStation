@@ -6,8 +6,10 @@ namespace TrainStation.Utils
 {
     public interface IFileHandler
     {
-        List<string> ReadTextFileLines(string path);
-        List<string> ReadTextFileCommaSeparated(string path);
-        void ReadTextFileLinesRef(string path, ref List<string> list);
+        List<string> ReadTextFileLines();
+
+        List<string> ReadTextFileCommaSeparated();
+
+        List<string> GetRandomStationPrefixes(int numOfStations);
     }
 }

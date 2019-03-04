@@ -1,25 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace TrainStation.Utils
 {
     public class FileHandler : IFileHandler
     {
-        public FileHandler()
+        private string dataFilePath;
+
+        public FileHandler(string path)
         {
+            this.dataFilePath = path;
         }
 
-        public List<string> ReadTextFileLines(string path)
+        public List<string> ReadTextFileLines()
         {
-            if(!File.Exists(path))
+            if(!File.Exists(dataFilePath))
             {
-                throw new Exception($"File not found at {path}");
+                throw new Exception($"File not found at {dataFilePath}");
             }
 
             var lines = new List<string>();
-            using (StreamReader stream = new StreamReader(path))
+            using (StreamReader stream = new StreamReader(dataFilePath))
             {
                 while (!stream.EndOfStream)
                 {
@@ -29,32 +33,15 @@ namespace TrainStation.Utils
             return lines;
         }
 
-        public void ReadTextFileLinesRef(string path, ref List<string> list)
+        public List<string> ReadTextFileCommaSeparated()
         {
-            if(!File.Exists(path))
+            if (!File.Exists(dataFilePath))
             {
-                throw new Exception($"File not found at {path}");
-            }
-
-            var lines = new List<string>();
-            using (StreamReader stream = new StreamReader(path))
-            {
-                while (!stream.EndOfStream)
-                {
-                    list.Add(stream.ReadLine().ToUpper());
-                }
-            }
-        }
-
-        public List<string> ReadTextFileCommaSeparated(string path)
-        {
-            if (!File.Exists(path))
-            {
-                throw new Exception($"File not found at {path}");
+                throw new Exception($"File not found at {dataFilePath}");
             }
 
             List<string> words = new List<string>();
-            string text = File.ReadAllText(path);
+            string text = File.ReadAllText(dataFilePath);
             string[] splitted = text.Split(',');
             foreach(string station in splitted)
             {
@@ -63,5 +50,18 @@ namespace TrainStation.Utils
             return words;
         }
 
+        public List<string> GetRandomStationPrefixes(int numOfStations)
+        {
+            string[] allStations = ReadTextFileLines().ToArray();
+            Random random = new Random();
+            string[] result = new string[numOfStations];
+
+            for (int i = 0; i < result.Length; ++i)
+            {
+                result[i] = allStations[random.Next(0, allStations.Length - 1)].Substring(0,2);
+            }
+
+            return result.ToList();
+        }
     }
 }
