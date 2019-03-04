@@ -11,7 +11,7 @@ namespace TrainStation.Services
     {
         private readonly Node root;
         private readonly IFileHandler fileHandler;
-        public TrieSuggestorService(string dataFilePath, IFileHandler _fileHandler)
+        public TrieSuggestorService(IFileHandler _fileHandler)
         {
             root = new Node()
             {
@@ -22,8 +22,7 @@ namespace TrainStation.Services
             };
 
             this.fileHandler = _fileHandler;
-            List<string> stations = new List<string>();
-            fileHandler.ReadTextFileLinesRef(dataFilePath, ref stations);
+            List<string> stations = fileHandler.ReadTextFileLines();
             for (int i = 0; i < stations.Count; i++)
             {
                 this.Insert(stations[i]);

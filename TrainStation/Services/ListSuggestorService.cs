@@ -18,13 +18,11 @@ namespace TrainStation.Services
         /// <summary>
         /// Constructor takes the data file path and a FileHandler and populates the stations list
         /// </summary>
-        /// <param name="dataFilePath">Path of the data file</param>
         /// <param name="_fileHandler">Object that implements the IFileHandler interface to deal with the input data file.</param>
-        public ListSuggestorService(string dataFilePath, IFileHandler _fileHandler)
+        public ListSuggestorService(IFileHandler _fileHandler)
         {
             this.fileHandler = _fileHandler;
-            this.stations = new List<string>();
-            fileHandler.ReadTextFileLinesRef(dataFilePath, ref this.stations);
+            this.stations = fileHandler.ReadTextFileLines();
         }
 
         /// <summary>
@@ -47,7 +45,7 @@ namespace TrainStation.Services
             {
                 suggestions.Stations = this.stations.Where(s => s.ToLower().StartsWith(userInput.ToLower())).ToList();
             }
-            
+
             // Get all possible next letters
             // Loop through on all suggested stations
             foreach (string station in suggestions.Stations)
@@ -60,7 +58,7 @@ namespace TrainStation.Services
                     suggestions.NextLetters.Add(sub[0]);
                 }
             }
-            
+
             // Only need distinct characters
             suggestions.NextLetters = suggestions.NextLetters.Distinct().ToList();
             // Order the list

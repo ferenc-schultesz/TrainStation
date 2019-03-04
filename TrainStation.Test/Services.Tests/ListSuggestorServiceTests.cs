@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace TrainStation.Test.Services.Tests
 {
-    
+
     [TestFixture]
     public class ListSuggestorServiceTests
     {
@@ -37,8 +37,8 @@ namespace TrainStation.Test.Services.Tests
         {
             // Arrange
             var content = new List<string> { "AQ",};
-            fileHandler.Setup(fh => fh.ReadTextFileLines(It.IsAny<string>())).Returns(content);
-            this.service = new ListSuggestorService(testFileName, fileHandler.Object);
+            fileHandler.Setup(fh => fh.ReadTextFileLines()).Returns(content);
+            this.service = new ListSuggestorService(fileHandler.Object);
 
             // Act
             var result = this.service.GetSuggestions(input);
@@ -52,8 +52,9 @@ namespace TrainStation.Test.Services.Tests
         {
             // Arrange
             var content = new List<string> { "A", "AA", "AB", "AC", "AD" };
-            fileHandler.Setup(fh => fh.ReadTextFileLines(It.IsAny<string>())).Returns(content);
-            this.service = new ListSuggestorService(testFileName, fileHandler.Object);
+            fileHandler.Setup(fh => fh.ReadTextFileLines()).Returns(content);
+
+            this.service = new ListSuggestorService(fileHandler.Object);
 
             List<string> expectedStations = new List<string> { "A", "AA", "AB", "AC", "AD" };
 
@@ -77,8 +78,8 @@ namespace TrainStation.Test.Services.Tests
         {
             // Arrange
             var content = new List<string> { "A", "AA", "AB", "AC", "AAA", "AAC", "ABB", "B", "BA" };
-            fileHandler.Setup(fh => fh.ReadTextFileLines(It.IsAny<string>())).Returns(content);
-            this.service = new ListSuggestorService(testFileName, fileHandler.Object);
+            fileHandler.Setup(fh => fh.ReadTextFileLines()).Returns(content);
+            this.service = new ListSuggestorService(fileHandler.Object);
 
             List<string> expectedStations = expected.ToList();
 
@@ -98,8 +99,8 @@ namespace TrainStation.Test.Services.Tests
         {
             // Arrange
             var content = new List<string> { "A", "AA", "AB", "AC", "AAA", "AAC", "ABB", "B", "BA" };
-            fileHandler.Setup(fh => fh.ReadTextFileLines(It.IsAny<string>())).Returns(content);
-            this.service = new ListSuggestorService(testFileName, fileHandler.Object);
+            fileHandler.Setup(fh => fh.ReadTextFileLines()).Returns(content);
+            this.service = new ListSuggestorService(fileHandler.Object);
 
             List<string> expectedStations = new List<string> { };
 
@@ -119,8 +120,8 @@ namespace TrainStation.Test.Services.Tests
         {
             // Arrange
             var content = new List<string> { "A", "AA", "AB", "AC", "AAA", "AAC", "ABB", "B", "BA" };
-            fileHandler.Setup(fh => fh.ReadTextFileLines(It.IsAny<string>())).Returns(content);
-            this.service = new ListSuggestorService(testFileName, fileHandler.Object);
+            fileHandler.Setup(fh => fh.ReadTextFileLines()).Returns(content);
+            this.service = new ListSuggestorService(fileHandler.Object);
 
             List<char> expectedNextLetters = expected.ToList();
 
@@ -140,8 +141,8 @@ namespace TrainStation.Test.Services.Tests
         {
             // Arrange
             var content = new List<string> { "A", "AA", "AB", "AC", "AAA", "AAC", "ABB", "B", "BA" };
-            fileHandler.Setup(fh => fh.ReadTextFileLines(It.IsAny<string>())).Returns(content);
-            this.service = new ListSuggestorService(testFileName, fileHandler.Object);
+            fileHandler.Setup(fh => fh.ReadTextFileLines()).Returns(content);
+            this.service = new ListSuggestorService(fileHandler.Object);
 
             List<char> expectedNextLetters = new List<char> {};
 

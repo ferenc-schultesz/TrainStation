@@ -2,7 +2,7 @@
 
 namespace TrainStation.Services
 {
-    interface ITrainStationSuggestorService
+    public interface ITrainStationSuggestorService
     {
         Suggestions GetSuggestions(string userInput);
     }
