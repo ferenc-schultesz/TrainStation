@@ -39,7 +39,7 @@ namespace TrainStation
         {
             // Get user input and search
             string userInput;
-            Console.WriteLine("Enter full or partial station name: ");
+            Console.Write("Enter full or partial station name: ");
             userInput = Console.ReadLine();
 
             // search with trie
@@ -52,9 +52,14 @@ namespace TrainStation
             Console.WriteLine("");
             Console.WriteLine("---------------------------------------------------");
             Console.Write("Possible Stations: ");
-            foreach (string station in trieSuggestions.Stations)
+            var stationArray = trieSuggestions.Stations.ToArray();
+            if (stationArray.Length > 0)
             {
-                Console.Write(station + " ");
+                for (int i = 0; i < stationArray.Length - 1; ++i)
+                {
+                    Console.Write(stationArray[i] + ", ");
+                }
+                Console.Write(stationArray[stationArray.Length - 1]); 
             }
             Console.WriteLine("");
             return userInput;
