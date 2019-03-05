@@ -34,6 +34,10 @@ namespace TrainStation
             Console.Read();
         }
 
+        /// <summary>
+        /// Reads the user input and gets the suggesitons by using the Trie data structure
+        /// </summary>
+        /// <param name="service">Trie suggestr service</param>
         public static void TestSuggestor(ref ITrainStationSuggestorService service)
         {
             Console.WriteLine("#############################################");
