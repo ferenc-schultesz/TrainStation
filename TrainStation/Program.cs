@@ -19,10 +19,9 @@ namespace TrainStation
             {
                 // Init suggestors
                 suggestorWithTrie = new TrieSuggestorService(fileHAndler);
-                Console.WriteLine("------ Trainstation suggester has been initialised ------");
 
                 // Tests the suggestor implementation with user input
-                string userInput = TestSuggestor(ref suggestorWithTrie);
+                TestSuggestor(ref suggestorWithTrie);
 
                 // Meassures and displays performance difference between Trie and List implementation
                 // ListSuggestorService uses List and Linq, Trie uses Trie search tree data structure
@@ -35,9 +34,12 @@ namespace TrainStation
             Console.Read();
         }
 
-        public static string TestSuggestor(ref ITrainStationSuggestorService service)
+        public static void TestSuggestor(ref ITrainStationSuggestorService service)
         {
-            // Get user input and search
+            Console.WriteLine("#############################################");
+            Console.WriteLine("------ Trainstation suggester user test -----");
+            Console.WriteLine("#############################################");
+            Console.WriteLine("");
             string userInput;
             Console.Write("Enter full or partial station name: ");
             userInput = Console.ReadLine();
@@ -62,7 +64,6 @@ namespace TrainStation
                 Console.Write(stationArray[stationArray.Length - 1]);
             }
             Console.WriteLine("");
-            return userInput;
         }
 
         /// <summary>
@@ -72,6 +73,12 @@ namespace TrainStation
         /// </summary>
         public static void CheckPerformance()
         {
+            Console.WriteLine("");
+            Console.WriteLine("#############################################");
+            Console.WriteLine("-- Trainstation suggester performance test --");
+            Console.WriteLine("#############################################");
+            Console.WriteLine("");
+
             Stopwatch stopwatch = new Stopwatch();
 
             IFileHandler fileHandler = new FileHandler("Data\\TrainStations.txt");
