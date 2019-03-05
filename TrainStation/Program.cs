@@ -59,7 +59,7 @@ namespace TrainStation
                 {
                     Console.Write(stationArray[i] + ", ");
                 }
-                Console.Write(stationArray[stationArray.Length - 1]); 
+                Console.Write(stationArray[stationArray.Length - 1]);
             }
             Console.WriteLine("");
             return userInput;

@@ -78,7 +78,7 @@ namespace TrainStation.Services
         /// O(m) time complexity where m is the length of the word
         /// </summary>
         /// <param name="prefix">User input</param>
-        /// <returns name="node">Node with the given prefix</returns>
+        /// <returns>Node with the given prefix</returns>
         private Node SearchNodeByPrefix(string prefix)
         {
             Node node = this.root;
@@ -103,7 +103,7 @@ namespace TrainStation.Services
         /// Gets all possible stations from a node by using Depth-first search
         /// </summary>
         /// <param name="node">Trie node</param>
-        /// <returns name="stations">All stations with the given node's prefix</returns>
+        /// <returns>All stations with the given node's prefix</returns>
         private List<string> GetStationsByNode (Node node)
         {
             string prefix = node.prefix;
