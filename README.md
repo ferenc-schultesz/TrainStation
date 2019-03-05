@@ -31,3 +31,5 @@ To compare the performance difference in initialisation and search, the requirem
 On average the initialisation took about 20 times for the *Trie*, however the search takes about 10 times less. For a software where the time that initialisation takes is not important (applications that don’t change often), the *Trie* provides better results.
 
 Since UI was not part of the requirements, only a basic console interface was implemented where the user can input a string, the application lists the next letters and the train station suggestions and finally the results of the performance test.
+
+![Alt text](/Images/console.png)
