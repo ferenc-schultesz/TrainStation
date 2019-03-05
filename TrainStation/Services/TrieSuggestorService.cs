@@ -7,10 +7,19 @@ using TrainStation.Utils;
 
 namespace TrainStation.Services
 {
+    /// <summary>
+    /// ITrainStationSuggestorService implementation by using Trie search tree as a data structure and Depth-first search all stations
+    /// of a particular node
+    /// </summary>
     public class TrieSuggestorService : ITrainStationSuggestorService
     {
         private readonly Node root;
         private readonly IFileHandler fileHandler;
+
+        /// <summary>
+        /// Constructor takes an IFileHandler and creates the prefix tree
+        /// </summary>
+        /// <param name="_fileHandler">Object that implements the IFileHandler interface to deal with the input data file.</param>
         public TrieSuggestorService(IFileHandler _fileHandler)
         {
             root = new Node()
@@ -29,6 +38,12 @@ namespace TrainStation.Services
             }
 
         }
+
+        /// <summary>
+        /// Gets the suggestions based on the user input
+        /// </summary>
+        /// <param name="userInput">User input</param>
+        /// <returns>Suggestions including possible next letters and stations.</returns>
         public Suggestions GetSuggestions(string userInput)
         {
             userInput = userInput.ToUpper();
@@ -58,6 +73,12 @@ namespace TrainStation.Services
             return suggestions;
         }
 
+        /// <summary>
+        /// Searches the node where by the prefix. Search is done by characters in the prefix which gives
+        /// O(m) time complexity where m is the length of the word
+        /// </summary>
+        /// <param name="prefix">User input</param>
+        /// <returns name="node">Node with the given prefix</returns>
         private Node SearchNodeByPrefix(string prefix)
         {
             Node node = this.root;
@@ -78,6 +99,11 @@ namespace TrainStation.Services
             return node;
         }
 
+        /// <summary>
+        /// Gets all possible stations from a node by using Depth-first search
+        /// </summary>
+        /// <param name="node">Trie node</param>
+        /// <returns name="stations">All stations with the given node's prefix</returns>
         private List<string> GetStationsByNode (Node node)
         {
             string prefix = node.prefix;
@@ -103,6 +129,10 @@ namespace TrainStation.Services
             return stations;
         }
 
+        /// <summary>
+        /// Inserts a new word to the Trie.
+        /// </summary>
+        /// <param name="s">The word</param>
         private void Insert(string s)
         {
             Node node = this.root;

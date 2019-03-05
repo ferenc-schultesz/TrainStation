@@ -8,7 +8,7 @@ using TrainStation.Utils;
 namespace TrainStation.Services
 {
     /// <summary>
-    /// ITrainStationSuggestorService implekmentation by using List as datastructure to hold stations.
+    /// ITrainStationSuggestorService implementation by using List as datastructure to hold stations and linq to search.
     /// </summary>
     public class ListSuggestorService : ITrainStationSuggestorService
     {
@@ -16,7 +16,7 @@ namespace TrainStation.Services
         private IFileHandler fileHandler;
 
         /// <summary>
-        /// Constructor takes the data file path and a FileHandler and populates the stations list
+        /// Constructor takes an IFileHandler and populates the stations list
         /// </summary>
         /// <param name="_fileHandler">Object that implements the IFileHandler interface to deal with the input data file.</param>
         public ListSuggestorService(IFileHandler _fileHandler)
@@ -26,7 +26,8 @@ namespace TrainStation.Services
         }
 
         /// <summary>
-        /// Gets the suggestions based on the user input
+        /// Gets the suggestions based on the user input. Search is done by linq that loops through the list which gives O(n) complexity
+        /// where n is the number of words
         /// </summary>
         /// <param name="userInput">User input</param>
         /// <returns>Suggestions including possible next letters and stations.</returns>
